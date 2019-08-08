@@ -1,6 +1,5 @@
 function calculaDescuento(id){
 
-
 	var monto = document.getElementById("inputTotal").value;
 	var descuento = document.getElementById("inputDescuento").value;
 	var porcentaje = descuento/100;
@@ -8,6 +7,7 @@ function calculaDescuento(id){
 	var totalResultante = monto - totalDescontado;
 
 	document.getElementById("inputTotal").value = totalResultante;
+
 	document.getElementById("inputDescuento").value= descuento;
 
 	anticipoSugerido(id);
@@ -16,10 +16,33 @@ function calculaDescuento(id){
 }
 
 function anticipoSugerido(id){
+	//**************************FUNCION PARA CONVERTIR**********************************
+	var formatNumber = {
+ separador: ",", // separador para los miles
+ sepDecimal: '.', // separador para los decimales
+ formatear:function (num){
+ num +='';
+ var splitStr = num.split('.');
+ var splitLeft = splitStr[0];
+ var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '';
+ var regx = /(\d+)(\d{3})/;
+ while (regx.test(splitLeft)) {
+ splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
+ }
+ return this.simbol + splitLeft +splitRight;
+ },
+ new:function(num, simbol){
+ this.simbol = simbol ||'';
+ return this.formatear(num);
+ }
+}
+	//**********************************************************************************
 	var total = document.getElementById("inputTotal").value;
 	var sugerido1 = parseFloat(total * 0.20).toFixed(0);
 	var sugerido = parseFloat(sugerido1).toFixed(2);
-	document.getElementById("inputAnticipoSugerido").value = sugerido;
+
+	document.getElementById("inputAnticipoSugerido").value = formatNumber.new(sugerido);
+
 	restoDeCalculos(id);
 
 	return false;
@@ -27,6 +50,27 @@ function anticipoSugerido(id){
 
 function restoDeCalculos(id){
 
+		var formatNumber = {
+	 		separador: ",", // separador para los miles
+	 		sepDecimal: '.', // separador para los decimales
+	 		formatear:function (num){
+	 			num +='';
+	 			var splitStr = num.split('.');
+	 			var splitLeft = splitStr[0];
+	 			var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '';
+	 			var regx = /(\d+)(\d{3})/;
+	 			while (regx.test(splitLeft)) {
+	 				splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
+	 			}
+	 			return this.simbol + splitLeft +splitRight;
+	 	},
+	 	new:function(num, simbol){
+	 	this.simbol = simbol ||'';
+	 	return this.formatear(num);
+	 	}
+	}
+	//**************************FUNCION PARA CONVERTIR**********************************
+	//**********************************************************************************
 	var total = (document.getElementById("inputTotal").value);
 	var recibido = (document.getElementById("inputAnticipoRecibido").value);
 	var balance;
@@ -51,14 +95,15 @@ function restoDeCalculos(id){
 
 	var facturar = Number(recibido) + Number(saldo);
 	document.getElementById("inputAnticipoRecibido").value = recibido;
-	document.getElementById("inputBalance").value = balance;
-	document.getElementById("inputCuota").value = cuota;
-	document.getElementById("inputSaldoFinanciar").value = saldo;
-	document.getElementById("input24").value = cuota24;
-	document.getElementById("input18").value = cuota18;
-	document.getElementById("input12").value = cuota12;
-	document.getElementById("input6").value = cuota6;
-	document.getElementById("inputFacturar").value = facturar.toFixed(2);
+	document.getElementById("inputBalance").value = formatNumber.new(balance);
+	document.getElementById("inputCuota").value = formatNumber.new(cuota);
+	document.getElementById("inputSaldoFinanciar").value = formatNumber.new(saldo);
+	document.getElementById("input24").value = formatNumber.new(cuota24);
+	document.getElementById("input18").value = formatNumber.new(cuota18);
+	document.getElementById("input12").value = formatNumber.new(cuota12);
+	document.getElementById("input6").value = formatNumber.new(cuota6);
+	var facturar2 = facturar.toFixed(2);
+	document.getElementById("inputFacturar").value = formatNumber.new(facturar2);
 
 	return false;
 
@@ -68,3 +113,5 @@ function reiniciar(id){
 	//alert("[AVISO]:Todos los campos se han reiniciado!");
 	return true;
 }
+
+
